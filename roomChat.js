@@ -210,48 +210,6 @@ io.on('connection', (socket) => {
   });
 });
 
-// Function to dump data from Redis to PostgreSQL
-// const dumpDataToPostgres = async () => {
-//   try {
-//     let count = 0;
-//     const messages = await redisClient.lRange('messages', 0, -1);
-
-//     if (messages.length === 0) {
-//       console.log('No messages to dump');
-//       return;
-//     }
-
-//     const parsedMessages = messages.map(JSON.parse);
-
-//     // Store messages in PostgreSQL
-//     try {
-//       const client = await pool.connect();
-//       try {
-//         await client.query('BEGIN');
-//         const insertPromises = parsedMessages.map(message =>
-//           client.query(
-//             'INSERT INTO messages (content, userId, timestamp) VALUES ($1, $2, $3)',
-//             [message.content, message.userId, message.timestamp]
-//           )
-//         );
-//         await Promise.all(insertPromises);
-//         await client.query('COMMIT');
-//         await redisClient.del('messages');
-//         console.log('Dumped messages to PostgreSQL');
-//       } catch (error) {
-//         await client.query('ROLLBACK');
-//         console.error('Error saving messages to PostgreSQL:', error);
-//       } finally {
-//         client.release();
-//       }
-//     } catch (error) {
-//       console.error('Error connecting to PostgreSQL:', error);
-//     }
-//   } catch (err) {
-//     console.error('Error fetching messages from Redis:', err);
-//   }
-// };
-
 const dumpDataToPostgres = async () => {
     try {
       const messages = await redisClient.lRange('messages', 0, -1);
